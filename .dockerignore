@@ -1,0 +1,10 @@
+node_modules
+.env
+build
+contracts
+migrations
+truffle-config.js
+.gitignore
+test
+README.md
+.git

@@ -12,13 +12,10 @@ const [currAddress, updateCurrAddress] = useState("0x");
 
 async function getNFTData(tokenId) {
     const ethers = require("ethers");
-    //After adding your Hardhat network to your metamask, this code will get providers and signers
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.qtum);
     const signer = provider.getSigner();
     const addr = await signer.getAddress();
-    //Pull the deployed contract instance
     let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
-    //create an NFT Token
     const tokenURI = await contract.tokenURI(tokenId);
     const listedToken = await contract.getListedTokenForId(tokenId);
     let meta = await axios.get(tokenURI);
@@ -44,15 +41,12 @@ async function getNFTData(tokenId) {
 async function buyNFT(tokenId) {
     try {
         const ethers = require("ethers");
-        //After adding your Hardhat network to your metamask, this code will get providers and signers
         const provider = new ethers.providers.Web3Provider(window.qtum);
         const signer = provider.getSigner();
 
-        //Pull the deployed contract instance
         let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
         const salePrice = ethers.utils.parseUnits(data.price, 'ether')
         updateMessage("Buying the NFT... Please Wait (Upto 5 mins)")
-        //run the executeSale function
         let transaction = await contract.executeSale(tokenId, {value:salePrice});
         await transaction.wait();
 
@@ -70,7 +64,8 @@ async function buyNFT(tokenId) {
         getNFTData(tokenId);
 
     return(
-        <div style={{"min-height":"100vh"}}>
+        <div style={{"minHeight":"100vh"}}>
+            {!dataFetched ?  <div className="flex text-center flex-col mt-11 md:text-2xl text-white">Loading... </div>: 
             <div className="flex ml-20 mt-20">
                 <img src={data.image} alt="" className="w-2/5" />
                 <div className="text-xl ml-20 space-y-8 text-white shadow-2xl rounded-lg border-2 p-5">
@@ -81,7 +76,7 @@ async function buyNFT(tokenId) {
                         Description: {data.description}
                     </div>
                     <div>
-                        Price: <span className="">{data.price + " ETH"}</span>
+                        Price: <span className="">{data.price + " QTUM"}</span>
                     </div>
                     <div>
                         Owner: <span className="text-sm">{data.owner}</span>
@@ -99,6 +94,7 @@ async function buyNFT(tokenId) {
                     </div>
                 </div>
             </div>
+    }
         </div>
     )
 }

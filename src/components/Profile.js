@@ -1,4 +1,3 @@
-import { useParams } from 'react-router-dom';
 import MarketplaceJSON from "../Marketplace.json";
 import axios from "axios";
 import { useState } from "react";
@@ -10,10 +9,9 @@ export default function Profile ({address, appProvider, chainId}) {
     const [dataFetched, updateFetched] = useState(false);
     // const [address, updateAddress] = useState("0x");
     const [totalPrice, updateTotalPrice] = useState("0");
-    const params = useParams();
 
     useEffect(() => {
-        async function getNFTData(tokenId) {
+        async function getNFTData() {
             if (!appProvider || address === "0x") {
                 return
             }
@@ -21,11 +19,6 @@ export default function Profile ({address, appProvider, chainId}) {
             let sumPrice = 0;
             const provider = new ethers.providers.Web3Provider(appProvider);
             const signer = provider.getSigner();
-            // console.log("signer: ", signer);
-            // const addr = await signer.getAddress();
-            // console.log(("Address: ", addr));
-    
-            //Pull the deployed contract instance
             let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
             let transaction = await contract.getMyNFTs()
             console.log("transaction: ", transaction);
@@ -53,15 +46,9 @@ export default function Profile ({address, appProvider, chainId}) {
     
             updateData(items);
             updateFetched(true);
-            // updateAddress(addr);
             updateTotalPrice(sumPrice.toPrecision(3));
-        }
-        
-        const tokenId = params.tokenId;
-        // console.log("tokenId: ", tokenId, "params: ", params);
-        getNFTData(tokenId);
-
-
+        }     
+        getNFTData();
     }, [address, chainId, appProvider]);
 
     return (
@@ -82,7 +69,7 @@ export default function Profile ({address, appProvider, chainId}) {
                             </div>
                             <div className="ml-20">
                                 <h2 className="font-bold">Total Value</h2>
-                                {totalPrice} ETH
+                                {totalPrice} QTUM
                             </div>
                         </div>
                         <div className="flex flex-col text-center items-center mt-11 text-white">

@@ -18,7 +18,9 @@ async function getNFTData(tokenId) {
     let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
     const tokenURI = await contract.tokenURI(tokenId);
     const listedToken = await contract.getListedTokenForId(tokenId);
-    let meta = await axios.get(tokenURI);
+    let meta = await axios.get(tokenURI,{
+        mode: "no-cors"
+    });
     meta = meta.data;
     console.log(listedToken);
 

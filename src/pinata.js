@@ -12,7 +12,8 @@ export const uploadJSONToIPFS = async(JSONBody) => {
             headers: {
                 pinata_api_key: key,
                 pinata_secret_api_key: secret,
-            }
+            },
+            mode: 'no-cors',
         })
         .then(function (response) {
            return {
@@ -70,7 +71,8 @@ export const uploadFileToIPFS = async(file) => {
                 'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
                 pinata_api_key: key,
                 pinata_secret_api_key: secret,
-            }
+            },
+            mode: 'no-cors',
         })
         .then(function (response) {
             console.log("image uploaded", response.data.IpfsHash)

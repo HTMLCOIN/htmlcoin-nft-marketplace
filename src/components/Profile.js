@@ -27,7 +27,9 @@ export default function Profile ({address, appProvider, chainId}) {
                 console.log("getNFTData => i.tokenId: ", i.tokenId, "i: ", i);
                 const tokenURI = await contract.tokenURI(i.tokenId);
                 console.log("tokenURI: ", tokenURI);
-                let meta = await axios.get(tokenURI);
+                let meta = await axios.get(tokenURI, {
+                    mode: "no-cors"
+                });
                 meta = meta.data;
     
                 let price = ethers.utils.formatUnits(i.price.toString(), 'ether');
@@ -52,7 +54,7 @@ export default function Profile ({address, appProvider, chainId}) {
     }, [address, chainId, appProvider]);
 
     return (
-        <div className="profileClass" style={{"min-height":"100vh"}}>
+        <div className="profileClass" style={{"minHeight":"100vh"}}>
             <div className="profileClass">
                 <div className="flex text-center flex-col mt-11 md:text-2xl text-white">
                     <div className="mb-5">

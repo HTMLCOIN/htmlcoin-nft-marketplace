@@ -19,10 +19,10 @@ function App() {
     <div className="container">
       <Navbar setAppAddress={updateAddress} setAppProvider={setProvider} setAppChainId={updateChainId}/>
         <Routes>
-          <Route path="/" element={<Marketplace address={currAddress} appProvider={provider} chainId={chainId} />}/>
-          <Route path="/nftPage/:tokenId" element={<NFTPage />}/>        
+          <Route path="/" element={<Marketplace  appProvider={provider} chainId={chainId} />}/>
+          <Route path="/nftPage/:tokenId" element={<NFTPage address={currAddress} appProvider={provider} chainId={chainId} />}/>        
           <Route path="/profile" element={<Profile address={currAddress} appProvider={provider} chainId={chainId} />}/>
-          <Route path="/sellNFT" element={<SellNFT />}/>             
+          <Route path="/sellNFT" element={<SellNFT address={currAddress} appProvider={provider} chainId={chainId} />}/>             
         </Routes>
     </div>
   );

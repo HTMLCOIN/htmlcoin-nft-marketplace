@@ -1,12 +1,12 @@
 import NFTTile from "./NFTTile";
 import MarketplaceJSON from "../Marketplace.json";
-import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import {getItems} from "../utils/contract";
 const PRIV_KEY = process.env.REACT_APP_QTUM_PRIV_KEY;
 const QTUM_NETWORK = process.env.REACT_APP_QTUM_NETWORK;
 
-export default function Marketplace() {
+export default function Marketplace({ appProvider, chainId}) {
 
     const [data, updateData] = useState(null);
     const [dataFetched, updateFetched] = useState(false);
@@ -24,26 +24,8 @@ export default function Marketplace() {
             let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
             let transaction = await contract.getAllNFTs()
 
-            //Fetch all the details of every NFT from the contract and display
-            const items = await Promise.all(transaction.map(async (i, j) => {
-                const tokenURI = await contract.tokenURI(i.tokenId);
-                let meta = await axios.get(tokenURI, {
-                    mode: 'no-cors'
-                });
-                meta = meta.data;
-
-                let price = ethers.utils.formatUnits(i.price.toString(), 'ether');
-                let item = {
-                    price,
-                    tokenId: i.tokenId.toNumber(),
-                    seller: i.seller,
-                    owner: i.owner,
-                    image: meta.image,
-                    name: meta.name,
-                    description: meta.description,
-                }
-                return item;
-            }))
+            let [items, sumPrice] = await getItems(contract, transaction);
+            console.log("items: ", items);
         
             updateFetched(true);
             updateData(items);

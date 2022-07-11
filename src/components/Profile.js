@@ -1,13 +1,12 @@
 import MarketplaceJSON from "../Marketplace.json";
-import axios from "axios";
 import { useState } from "react";
 import NFTTile from "./NFTTile";
 import { useEffect } from "react";
+import {getContract, getItems} from "../utils/contract";
 
 export default function Profile ({address, appProvider, chainId}) {
     const [data, updateData] = useState([]);
     const [dataFetched, updateFetched] = useState(false);
-    // const [address, updateAddress] = useState("0x");
     const [totalPrice, updateTotalPrice] = useState("0");
 
     useEffect(() => {
@@ -15,36 +14,9 @@ export default function Profile ({address, appProvider, chainId}) {
             if (!appProvider || address === "0x") {
                 return
             }
-            const ethers = require("ethers");
-            let sumPrice = 0;
-            const provider = new ethers.providers.Web3Provider(appProvider);
-            const signer = provider.getSigner();
-            let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
+            let contract = await getContract(appProvider, MarketplaceJSON.address, MarketplaceJSON.abi);
             let transaction = await contract.getMyNFTs()
-            console.log("transaction: ", transaction);
-    
-            const items = await Promise.all(transaction.map(async i => {
-                console.log("getNFTData => i.tokenId: ", i.tokenId, "i: ", i);
-                const tokenURI = await contract.tokenURI(i.tokenId);
-                console.log("tokenURI: ", tokenURI);
-                let meta = await axios.get(tokenURI, {
-                    mode: "no-cors"
-                });
-                meta = meta.data;
-    
-                let price = ethers.utils.formatUnits(i.price.toString(), 'ether');
-                let item = {
-                    price,
-                    tokenId: i.tokenId.toNumber(),
-                    seller: i.seller,
-                    owner: i.owner,
-                    image: meta.image,
-                    name: meta.name,
-                    description: meta.description,
-                }
-                sumPrice += Number(price);
-                return item;
-            }))
+            let [items, sumPrice] = await getItems(contract, transaction);
     
             updateData(items);
             updateFetched(true);

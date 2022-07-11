@@ -1,21 +1,18 @@
 import { useState } from "react";
 import { uploadFileToIPFS, uploadJSONToIPFS } from "../pinata";
-import Marketplace from '../Marketplace.json';
-// import { useLocation } from "react-router";
+import MarketplaceJSON from '../Marketplace.json';
+import {getContract} from "../utils/contract";
 
-export default function SellNFT () {
+export default function SellNFT ({address, appProvider, chainId}) {
     const [formParams, updateFormParams] = useState({ name: '', description: '', price: ''});
     const [fileURL, setFileURL] = useState(null);
     const ethers = require("ethers");
     const [message, updateMessage] = useState('');
-    // const location = useLocation();
 
-    //This function uploads the NFT image to IPFS
     async function OnChangeFile(e) {
         var file = e.target.files[0];
         console.log("onChangeFile: ", file);
         try {
-            //upload the file to IPFS
             updateMessage("Please wait.. uploading file to IPFS")
             const response = await uploadFileToIPFS(file);
             updateMessage("")
@@ -34,7 +31,6 @@ export default function SellNFT () {
     //This function uploads the metadata to IPFS
     async function uploadMetadataToIPFS() {
         const {name, description, price} = formParams;
-        //Make sure that none of the fields are empty
         console.log("name, description, price: ", name, description, price);
         if( !name || !description || !price || !fileURL)
         {   
@@ -46,7 +42,6 @@ export default function SellNFT () {
         }
 
         try {
-            //upload the metadata JSON to IPFS
             const response = await uploadJSONToIPFS(nftJSON);
             console.log("response from uploadJSONToIPFS: ", response);
             if(response.success === true){
@@ -62,14 +57,10 @@ export default function SellNFT () {
     async function listNFT(e) {
         e.preventDefault();
 
-        //Upload data to IPFS
         try {
             const metadataURL = await uploadMetadataToIPFS();
-            const provider = new ethers.providers.Web3Provider(window.qtum);
-            const signer = provider.getSigner();
+            let contract = await getContract(appProvider, MarketplaceJSON.address, MarketplaceJSON.abi);
             updateMessage("Please wait.. minting NFT (up to 5 mins)")
-
-            let contract = new ethers.Contract(Marketplace.address, Marketplace.abi, signer)
 
             const price = ethers.utils.parseUnits(formParams.price, 'ether')
             let listingPrice = await contract.getListPrice()

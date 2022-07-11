@@ -1,9 +1,10 @@
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import MarketplaceJSON from "../Marketplace.json";
 import axios from "axios";
 import { useState } from "react";
+import {getContract} from "../utils/contract";
 
-export default function NFTPage (props) {
+export default function NFTPage ({address, appProvider, chainId}) {
 
 const [data, updateData] = useState({});
 const [dataFetched, updateDataFetched] = useState(false);
@@ -11,11 +12,7 @@ const [message, updateMessage] = useState("");
 const [currAddress, updateCurrAddress] = useState("0x");
 
 async function getNFTData(tokenId) {
-    const ethers = require("ethers");
-    const provider = new ethers.providers.Web3Provider(window.qtum);
-    const signer = provider.getSigner();
-    const addr = await signer.getAddress();
-    let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
+    let contract = await getContract(appProvider, MarketplaceJSON.address, MarketplaceJSON.abi);
     const tokenURI = await contract.tokenURI(tokenId);
     const listedToken = await contract.getListedTokenForId(tokenId);
     let meta = await axios.get(tokenURI,{
@@ -36,17 +33,13 @@ async function getNFTData(tokenId) {
     console.log(item);
     updateData(item);
     updateDataFetched(true);
-    console.log("address", addr)
-    updateCurrAddress(addr);
+    updateCurrAddress(address);
 }
 
 async function buyNFT(tokenId) {
     try {
         const ethers = require("ethers");
-        const provider = new ethers.providers.Web3Provider(window.qtum);
-        const signer = provider.getSigner();
-
-        let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer);
+        let contract = await getContract(appProvider, MarketplaceJSON.address, MarketplaceJSON.abi);
         const salePrice = ethers.utils.parseUnits(data.price, 'ether')
         updateMessage("Buying the NFT... Please Wait (Upto 5 mins)")
         let transaction = await contract.executeSale(tokenId, {value:salePrice});

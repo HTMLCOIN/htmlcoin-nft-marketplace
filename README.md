@@ -3,6 +3,8 @@
 ## A. About
 Full stack NFT market place based on [Qtum](https://qtum.info) testnet network
 
+Live demo: https://remix.qtum.info/nftmarketplace/
+
 ---
 
 <img src="./home.png" height="400px">

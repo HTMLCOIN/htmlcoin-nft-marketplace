@@ -17,11 +17,11 @@ export default function Profile ({address, appProvider, chainId}) {
             let contract = await getContract(appProvider, MarketplaceJSON.address, MarketplaceJSON.abi);
             let transaction = await contract.getMyNFTs()
             let [items, sumPrice] = await getItems(contract, transaction);
-    
+
             updateData(items);
             updateFetched(true);
             updateTotalPrice(sumPrice.toPrecision(3));
-        }     
+        }
         getNFTData();
     }, [address, chainId, appProvider]);
 
@@ -30,11 +30,11 @@ export default function Profile ({address, appProvider, chainId}) {
             <div className="profileClass">
                 <div className="flex text-center flex-col mt-11 md:text-2xl text-white">
                     <div className="mb-5">
-                        <h2 className="font-bold">Wallet Address</h2>  
+                        <h2 className="font-bold">Wallet Address</h2>
                         {address === "0x" ? <h3>Please connect your wallet</h3> : <h3>{address}</h3>}
                     </div>
                 </div>
-                {!dataFetched ?  <div className="flex text-center flex-col mt-11 md:text-2xl text-white">Loading... </div>: 
+                {!dataFetched ?  <div className="flex text-center flex-col mt-11 md:text-2xl text-white">Loading... </div>:
                     <div>
                         <div className="flex flex-row text-center justify-center mt-10 md:text-2xl text-white">
                             <div>
@@ -43,7 +43,7 @@ export default function Profile ({address, appProvider, chainId}) {
                             </div>
                             <div className="ml-20">
                                 <h2 className="font-bold">Total Value</h2>
-                                {totalPrice} QTUM
+                                {totalPrice} HTMLCOIN
                             </div>
                         </div>
                         <div className="flex flex-col text-center items-center mt-11 text-white">

@@ -1,7 +1,7 @@
-# NFT Marketplace on Qtum testnet
+# NFT Marketplace on Htmlcoin testnet
 
 ## A. About
-Full stack NFT market place based on [Qtum](https://qtum.info) testnet network
+Full stack NFT market place based on [Htmlcoin](https://qtum.info) testnet network
 
 Live demo: https://remix.qtum.info/nftmarketplace/
 
@@ -13,9 +13,9 @@ Live demo: https://remix.qtum.info/nftmarketplace/
 
 ### - Stack
 - Web App: React.js
-- Solidity development environment: [Truffle Qtum Box](https://github.com/qtumproject/react-box)
+- Solidity development environment: [Truffle Htmlcoin Box](https://github.com/qtumproject/react-box)
 - File Storage: IPFS ([Pinata](https://www.pinata.cloud/))
-- Wallet: Qtum [Qnekt wallet](https://github.com/earlgreytech/metamask-extension/releases)  
+- Wallet: Htmlcoin [Qnekt wallet](https://github.com/earlgreytech/metamask-extension/releases)  
 
 ### - Project description
 
@@ -48,8 +48,8 @@ The marketplace logic consists of just one ECR721 smart contract
 ```
 REACT_APP_PINATA_KEY= < paste key from https://www.pinata.cloud/ >
 REACT_APP_PINATA_SECRET= < paste secret from https://www.pinata.cloud/ >
-REACT_APP_QTUM_NETWORK="https://testnet-janus.qiswap.com/api/"
-REACT_APP_QTUM_PRIV_KEY= < a private key from a valid Qtum address >
+REACT_APP_HTMLCOIN_NETWORK="https://testnet-janus.qiswap.com/api/"
+REACT_APP_HTMLCOIN_PRIV_KEY= < a private key from a valid Htmlcoin address >
 MNEMONIC= < mnemonic seed phrase >
 ```
 
@@ -89,4 +89,4 @@ docker run -d -p 3000:3000 --name qtumnft qtum/nftstore
 
 On your Chrome browser go to http://localhost:3000/nftmarketplace
 
-Make sure you have installed the Qtum [Qnekt wallet](https://github.com/earlgreytech/metamask-extension/releases) browser extension
+Make sure you have installed the Htmlcoin [Qnekt wallet](https://github.com/earlgreytech/metamask-extension/releases) browser extension

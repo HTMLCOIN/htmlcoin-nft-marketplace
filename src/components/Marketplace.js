@@ -3,8 +3,8 @@ import MarketplaceJSON from "../Marketplace.json";
 import { useState } from "react";
 import { useEffect } from "react";
 import {getItems} from "../utils/contract";
-const PRIV_KEY = process.env.REACT_APP_QTUM_PRIV_KEY;
-const QTUM_NETWORK = process.env.REACT_APP_QTUM_NETWORK;
+const PRIV_KEY = process.env.REACT_APP_HTMLCOIN_PRIV_KEY;
+const HTMLCOIN_NETWORK = process.env.REACT_APP_HTMLCOIN_NETWORK;
 
 export default function Marketplace({ appProvider, chainId}) {
 
@@ -12,21 +12,21 @@ export default function Marketplace({ appProvider, chainId}) {
     const [dataFetched, updateFetched] = useState(false);
 
 
-    useEffect(() => { 
+    useEffect(() => {
         async function getAllNFTs() {
-            const {QtumProvider, QtumWallet} = require("qtum-ethers-wrapper");
-            const testnetProvider = new QtumProvider(QTUM_NETWORK);
-            const signer = new QtumWallet(
+            const {HtmlcoinProvider, HtmlcoinWallet} = require("htmlcoin-ethers-wrapper");
+            const provider = new HtmlcoinProvider(HTMLCOIN_NETWORK);
+            const signer = new HtmlcoinWallet(
                 PRIV_KEY,
-                testnetProvider,
+                provider,
             )
             const ethers = require("ethers");
             let contract = new ethers.Contract(MarketplaceJSON.address, MarketplaceJSON.abi, signer)
             let transaction = await contract.getAllNFTs()
 
-            let [items, sumPrice] = await getItems(contract, transaction);
+            let [items] = await getItems(contract, transaction);
             console.log("items: ", items);
-        
+
             updateFetched(true);
             updateData(items);
         }
@@ -44,7 +44,7 @@ export default function Marketplace({ appProvider, chainId}) {
                         return <NFTTile data={value} key={index}></NFTTile>;
                     }) : "No NFTs found")}
                 </div>
-            </div>            
+            </div>
         </div>
     );
 

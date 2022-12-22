@@ -25,27 +25,32 @@ function Navbar({setAppAddress, setAppProvider, setAppChainId}) {
 
   // Connect to the blockchain
   async function connectWebsite() {
-    if (!provider) {
-      return
-    }
-      const chainId = await provider.request({ method: 'eth_chainId' });
-      if(chainId !== '0x22B9')
-      {
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0x22B9' }],
-      })
-      }  
-      await provider.request({ method: 'eth_requestAccounts' })
-        .then(() => {
-          updateButton();
-          window.location.replace(location.pathname)
-        });
+      if (!provider) {
+        console.log("!provider was false");
+        return
+      }
+      try {
+        const chainId = await provider.request({ method: 'eth_chainId' });
+        if(chainId !== '0x115C')
+        {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: '0x115C' }],
+          });
+        }
+        await provider.request({ method: 'eth_requestAccounts' });
         const accounts = await provider.request({ method: 'eth_accounts' });
+        updateButton();
+        window.location.replace(location.pathname);
         updateAddress(accounts[0]);
         setAppAddress(accounts[0]);
-      
+      } catch (error) {
+        // Handle the error here
+        console.log('There was an error with connectWebsite');
+
+      }
   }
+
   // handle event when chainId is changed
   function handleChainChanged(_chainId) {
     window.location.reload();
@@ -63,11 +68,11 @@ function Navbar({setAppAddress, setAppProvider, setAppChainId}) {
     window.location.reload();
   }
 
-  
+
   // handle event when user changes account
   function handleAccountsChanged(accounts) {
     if (accounts.length === 0) {
-      console.log('Please connect to MetaMask.');
+      console.log('Please connect to Altmasq.');
       updateAddress('0x');
       setAppAddress('0x');
       toggleConnect(false);
@@ -81,9 +86,9 @@ function Navbar({setAppAddress, setAppProvider, setAppChainId}) {
   useEffect(() => {
     const init = async () => {
 
-      const provider = window.qtum;
+      const provider = window.altmasq;
       if (!provider) {
-        alert('Qnekt wallet not found');
+        alert('Altmasq wallet not found');
         return;
       } else {
           setProvider(provider);
@@ -92,8 +97,8 @@ function Navbar({setAppAddress, setAppProvider, setAppChainId}) {
       // Check if chain id is correct
       const chainId = await provider.request({ method: 'eth_chainId' });
       updateChainId(chainId);
-      if (chainId !== '0x22B9') {
-        alert('Incorrect network! Switch your Qnekt network to Qtum testnet');
+      if (chainId !== '0x115C') {
+        alert('Incorrect network! Switch your Altmasq network to Htmlcoin testnet');
         return;
       }
       setAppChainId(chainId);
@@ -134,33 +139,33 @@ function Navbar({setAppAddress, setAppProvider, setAppChainId}) {
         </li>
         <li className='w-2/6'>
           <ul className='lg:flex justify-between font-bold mr-10 text-lg'>
-            {location.pathname === "/" ? 
+            {location.pathname === "/" ?
             <li className='border-b-2 hover:pb-0 p-2'>
               <Link to="/">Marketplace</Link>
             </li>
             :
             <li className='hover:border-b-2 hover:pb-0 p-2'>
               <Link to="/">Marketplace</Link>
-            </li>              
+            </li>
             }
-            {location.pathname === "/sellNFT" ? 
+            {location.pathname === "/sellNFT" ?
             <li className='border-b-2 hover:pb-0 p-2'>
               <Link to="/sellNFT">List My NFT</Link>
             </li>
             :
             <li className='hover:border-b-2 hover:pb-0 p-2'>
               <Link to="/sellNFT">List My NFT</Link>
-            </li>              
-            }              
-            {location.pathname === "/profile" ? 
+            </li>
+            }
+            {location.pathname === "/profile" ?
             <li className='border-b-2 hover:pb-0 p-2'>
               <Link to="/profile">Profile</Link>
             </li>
             :
             <li className='hover:border-b-2 hover:pb-0 p-2'>
               <Link to="/profile">Profile</Link>
-            </li>              
-            }  
+            </li>
+            }
             <li>
               <button className="enableEthereumButton bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm" onClick={connectWebsite}>{connected? "Connected":"Connect Wallet"}</button>
             </li>
